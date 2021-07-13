@@ -1,0 +1,413 @@
+import { Head, Notes, Image } from 'mdx-deck'
+
+import { themes } from 'mdx-deck'
+import { dark as mdxDark } from '@mdx-deck/themes'
+import { highlight } from 'mdx-deck/themes'
+
+<!-- https://github.com/pomber/code-surfer/blob/code-surfer-v2/readme.md -->
+<!-- import { Code, CodeSurferLayout } from "code-surfer" -->
+<!-- import "prismjs/components/prism-java" -->
+
+import Center from './components/layout/Center';
+import Jumbo from './components/layout/Jumbo';
+
+export const theme = {
+  ...mdxDark,
+  metadata: {
+    author: `Sergio Valverde`,
+    twitter: `@svg153`,
+    date: `Nov 29, 2019`,
+    repository: `https://github.com/svg153/docker-demo`
+  },
+}
+
+<Head>
+  <title>Docker demo / workshop - Part 1</title>
+</Head>
+
+
+# Docker demo / workshop<br/>
+
+
+👨‍💻 Sergio Valverde @sevg<br/>
+
+Nov 29, 2019<br/>
+
+---
+
+# Docker (I)
+
+Time ago...
+
+```bash
+$ chroot
+```
+
+---
+
+# Docker (II)
+
+*"`chroot` is an operation that changes the apparent root directory for the current running process and their children. **A program** that is run in such a modified environment cannot access files and commands outside that environmental directory tree. This modified environment is called a `chroot` **jail**."*
+
+-- From Archwiki, chroot
+
+---
+
+# Docker (III)
+
+Now...
+
+```bash
+$ docker
+```
+
+---
+
+# Docker (III)
+
+*"`Docker` is a tool that packages, provisions and runs containers independent of the OS"*
+
+-- From [searchitoperations.techtarget.com, Docker](https://searchitoperations.techtarget.com/definition/Docker)
+
+---
+
+# Containerization
+
+Container technology is available through the operating system.
+[Containerization Explained - IBM Cloud](https://www.youtube.com/watch?v=0qotVMX-J5s)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0qotVMX-J5s" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+---
+
+# Docker engine
+
+![](https://m-square.com.au/wp-content/uploads/2018/11/DockerEngineDiagram-1.png)
+
+---
+
+# Docker vs VM
+
+- Docker engine vs hypervisor.
+- The contained processes are running on the Host!.
+
+---
+
+# Docker concepts and interactions
+
+- **Host**, the machine that is running the Docker engine, necessary to run the containers.
+- **Layer**, a hierarchy of files, with meta-data.
+- **Image**, consists of read-only layers each of which represents a Dockerfile instruction
+- **Container**, a contained running process, started from an image.
+- **Registry**, a repository of images. Local or remote.
+- **Volume**, storage outside the container.
+- **Dockerfile** (`Dockerfile`), a script for creating images.
+- **Docker compose**, (`docker-compose.yml`), is a tool for defining and running multi-container Docker applications.
+- **Docker Swarm**, is a clustering and scheduling tool for Docker containers.
+
+---
+
+# Image
+
+A container packages the application service or function with all of the libraries, configuration files, dependencies and other necessary parts to operate.
+Each container shares the services of one underlying operating system.
+
+---
+
+# Container
+
+Is an instance of an image.
+
+---
+
+# Dockerfile BUILD Commands
+
+- `FROM` – The image the new image will be based on.
+- `MAINTAINER` – Name and email of the maintainer of this image.
+- `ARG` – Environment variable in the container only for build stage.
+    - Can be overridden with command line parameters.
+- `COPY` – Copy a file or a directory into the image.
+- `ADD` – Same as `COPY`, but handle URL:s and unpack tarballs automatically.
+- `RUN` – Run a command inside the container, such as apt-get install.
+- `.dockerignore` – Not a command, but it controls what files are added to the build context. Files not needed when building the image.
+- `ONBUILD` – Run commands when building an inherited Dockerfile.
+
+---
+
+# Dockerfile RUN commands
+
+- `ENV` – Set environment variable in the container.
+- `CMD` – Default command to run when running the container.
+    - Can be overridden with command line parameters.
+- `EXPOSE` – Expose ports from the container.
+    - Explicitly by *run* with `-p` or `-P`.
+- `VOLUME` – Specify that a directory should be stored outside the union file system.
+    - Set by *run* with `-v`, default `/var/lib/docker/volumes`.
+- `ENTRYPOINT` – Specify a command that is not overridden as `CMD`. Give a default executable and use commands as parameters to it.
+- `USER` – Set the user for `RUN`, `CMD` and `ENTRYPOINT`.
+- `WORKDIR` – Sets the working directory for `RUN`, `CMD`, `ENTRYPOINT`, `ADD` and `COPY`.
+
+---
+
+# Resumen...
+
+- [Docker cheatsheet]()
+- Dockerfile, crear capas y esas crean imágenes
+- contenedores, una instancia de una imagen. Tiene ciclo de vida.
+- registro, Local, Docker hub
+- Comandos de docker
+    - `docker pull`
+    - `docker run`
+    - `docker build`
+
+---
+
+# example-voting-app
+
+```bash
+git clone https://github.com/dockersamples/example-voting-app.git
+cd example-voting-app
+docker-compose up
+firefox localhost:5000 localhost:5001
+```
+
+---
+
+# RATS
+
+RATS image to analyze the .C and .H hifly code
+
+---
+
+# RATS - Creating the image - Docker bash
+
+```bash
+docker run \
+    --rm \
+    -it \
+    ubuntu:18.04 \
+    /bin/bash
+```
+
+---
+
+# RATS - Creating the image
+
+Follow the [RATS linux installations instructions](https://security.web.cern.ch/security/recommendations/en/codetools/rats.shtml)
+* You need to have installed `expat` library 2.0.1 version or greater.
+```bash
+wget https://rough-auditing-tool-for-security.googlecode.com/files/rats-2.4.tgz
+tar -xzvf rats-2.4.tgz
+cd rats-2.4
+./configure && make && sudo make install
+./rats
+```
+
+---
+
+# RATS - Creating the image <br/> Bash
+
+```bash
+docker run --rm -it ubuntu:18.04 /bin/bash
+root@649b66567499:/#
+```
+
+---
+
+# RATS - Creating the image <br/> Steps (I)
+
+```bash
+wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/rough-auditing-tool-for-security/rats-2.4.tgz
+apt-get install -y -q wget
+apt-get update
+export HTTP_PROXY=http://proxy.com:80/
+export HTTPS_PROXY=http://proxy.com:80/
+export http_proxy=http://proxy.com:80/
+export https_proxy=http://proxy.com:80/
+```
+
+---
+
+# RATS - Creating the image <br/> Steps (II)
+
+```bash
+apt-get update
+apt-get install -y -q wget
+wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/rough-auditing-tool-for-security/rats-2.4.tgz
+tar -xzvf rats-2.4.tgz
+cd rats-2.4
+```
+
+---
+
+# RATS - Creating the image <br/> Steps (III)
+
+```bash
+./configure
+apt-get install -y -q gcc
+./configure
+apt-get install -y -q libexpat-dev
+./configure
+
+make
+apt-get install -y -q make
+
+make
+make install
+rats
+```
+
+---
+
+# RATS - Creating the image <br/> Steps (IV)
+
+```bash
+# pick the history
+history
+```
+
+---
+
+# RATS - Creating the image <br/> Dockerfile (I)
+
+```Dockerfile
+FROM ubuntu:18.04
+
+ENV HTTP_PROXY http://proxy.com:80/
+ENV HTTPS_PROXY http://proxy.com:80/
+ENV http_proxy http://proxy.com:80/
+ENV https_proxy http://proxy.com:80/
+
+RUN apt-get update
+RUN apt-get install -y -q wget
+RUN apt-get install -y -q gcc
+RUN apt-get install -y -q libexpat-dev
+RUN apt-get install -y -q make
+```
+
+---
+
+# RATS - Creating the image <br/> Dockerfile (II)
+
+```Dockerfile
+RUN wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/rough-auditing-tool-for-security/rats-2.4.tgz
+RUN tar -xzvf rats-2.4.tgz
+# RUN cd rats-2.4
+WORKDIR /rats-2.4
+RUN ./configure
+RUN make
+RUN make install
+```
+
+---
+
+# RATS - Creating the image <br/> Build and run Dockerfile (III)
+
+Build:
+```bash
+docker build -f rats.dockerfile -t sevg/rats .
+```
+
+Run:
+```bash
+docker run sevg/rats rats
+```
+
+---
+
+# RATS - Creating the image <br/> Dockerfile - git
+
+```Dockerfile
+...
+
+RUN apt-get install -y -q git
+
+RUN git https://github.com/thesp0nge/rough-auditing-tool-for-security.git /rats-2.4
+WORKDIR /rats-2.4
+RUN ./configure
+RUN make
+RUN make install
+
+...
+```
+
+---
+
+# RATS - Creating the image <br/> Dockerfile - resizing
+
+[minimize-the-number-of-layers](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#minimize-the-number-of-layers)
+
+```Dockerfile
+
+...
+
+RUN apt-get update && \
+    apt-get install -y -q wget gcc libexpat-dev make git
+
+...
+
+RUN git clone https://github.com/thesp0nge/rough-auditing-tool-for-security.git /rats-2.4 && \
+    cd /rats-2.4 && \
+    ./configure && \
+    make && \
+    make install
+
+...
+
+```
+
+---
+
+## TOOLS - [Portainer](https://github.com/portainer/portainer)
+```bash
+docker run \
+    -d \
+    --name=portainer \
+    -p 9000:9000
+    --restart always \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    portainer/portainer \
+    -H unix:///var/run/docker.sock \
+    --no-auth \
+    &> /dev/null
+```
+
+---
+
+## TOOLS - [Drive](https://github.com/wagoodman/dive)
+
+```bash
+docker run \
+    --rm -it \
+    --name=dive \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    wagoodman/dive:latest <image_id>
+```
+
+---
+
+## TOOLS - [ctop](https://github.com/bcicen/ctop)
+
+```bash
+docker run \
+    --rm -it \
+    --name=ctop \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    quay.io/vektorlab/ctop:latest
+```
+
+---
+
+## Links
+
+- [Docker Cookbook](https://www.oreilly.com/library/view/docker-cookbook/9781491919705/)
+- [docker-cheat-sheet](https://www.jrebel.com/blog/docker-commands-cheat-sheet)
+- [dockerfile_best-practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+- [docker tips](https://github.com/wsargent/docker-cheat-sheet)
+- https://blog.jayway.com/2015/03/21/a-not-very-short-introduction-to-docker/
+- [veggiemonk/awesome-docker](https://github.com/veggiemonk/awesome-docker)
+- https://blog.yadutaf.fr/2017/09/10/running-a-graphical-app-in-a-docker-container-on-a-remote-server/
+- [searchitoperations.techtarget.com, Docker](https://searchitoperations.techtarget.com/definition/Docker)
+
+---
+
+# END

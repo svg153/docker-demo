@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "@svg153/docker-demo",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "mdx-deck deck.mdx",
+    "build": "mdx-deck build deck.mdx && cp -r images dist/",
+    "pdf": "mdx-deck pdf deck.mdx",
+    "image": "mdx-deck screenshot deck.mdx",
+    "help": "mdx-deck"
+  },
+  "devDependencies": {
+    "mdx-deck": "^MDX_DECK_VERSION"
+  },
+  "dependencies": {
+    "prismjs": "^1.15.0",
+    "raw-loader": "^0.5.1",
+    "mdx-deck-code-surfer": "^0.5.5",
+    "code-surfer": "^2.0.0-alpha.9",
+    "prism-react-renderer": "^0.1.6",
+    "recharts": "^1.6.2",
+    "styled-components": "^4.2.0"
+  }
+}
